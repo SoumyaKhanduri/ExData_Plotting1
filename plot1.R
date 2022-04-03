@@ -1,0 +1,39 @@
+#Loading and preprocessing the data
+
+fileurl<-"https://d396qusza40orc.cloudfront.net/exdata%2Fdata%2Fhousehold_power_consumption.zip"
+download.file(fileurl,destfile=paste0(getwd(),"/Power_consumption.zip"),method = "curl")
+unzip("Power_consumption.zip",exdir="./")
+
+#read file
+
+hpc<-read.table("household_power_consumption.txt", header=TRUE,sep=";", skip=66630, 
+                nrows=2900, col.names=names(initial), na.strings=c("?"),
+                colClasses=c("character", "character","numeric","numeric","numeric","numeric",
+                             "numeric","numeric","numeric"))
+
+
+#Converting Date and Time variables to Date/Time format
+
+
+hpc$Date<-as.Date(hpc$Date, format = "%d/%m/%Y")
+hpc$Time<-strptime(paste(hpc$Date,hpc$Time),"%F %T")
+
+
+# Subsetting loaded data for 2007-02-01 and 2007-02-02
+
+
+hpc<-subset(hpc,hpc$Date %in% as.Date(c("2007-02-01","2007-02-02")))
+
+
+#Plot 1. Histogram of Global active power consumption
+
+par(mfrow=c(1,1),mar=c(5,4.5,4,2))
+hist(hpc$Global_active_power, col="red", main="Global Active Power", 
+     xlab="Global Active Power (kilowatts)")
+
+
+png("plot1.png", width=480, height=480)
+par(mfrow=c(1,1),mar=c(5,4.5,4,2))
+hist(hpc$Global_active_power, col="red", main="Global Active Power", 
+     xlab="Global Active Power (kilowatts)")
+dev.off()
